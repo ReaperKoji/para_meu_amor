@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Gabriela 💚</title>
+
+<style>
+:root{
+  --green:#00ff99;
+  --pink:#ff77cc;
+  --bg:#070b07;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:"Courier New", monospace;
+  background:var(--bg);
+  color:#eafff5;
+  overflow-x:hidden;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+.container{
+  max-width:720px;
+  margin:auto;
+  padding:80px 20px 140px;
+}
+
+.card{
+  background:rgba(2,6,4,0.75);
+  border:1px solid var(--green);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:26px;
+  box-shadow:0 0 20px rgba(0,255,153,.15);
+  transition:.4s;
+}
+
+.card h2{
+  color:var(--pink);
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.card p{
+  line-height:1.6;
+  font-size:16px;
+}
+
+.locked .content{
+  filter:blur(6px);
+  user-select:none;
+}
+
+.locked{cursor:pointer}
+
+.hint{
+  display:block;
+  margin-top:10px;
+  font-size:13px;
+  color:#88ffcc;
+  opacity:.7;
+}
+
+.unlocked{
+  box-shadow:0 0 30px rgba(255,119,204,.35);
+}
+
+input{
+  margin-top:12px;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--pink);
+  background:transparent;
+  color:#fff;
+  font-family:inherit;
+  width:100%;
+}
+
+button{
+  margin-top:10px;
+  padding:10px 16px;
+  border-radius:20px;
+  background:none;
+  border:1px solid var(--pink);
+  color:var(--pink);
+  font-family:inherit;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--pink);
+  color:#000;
+}
+
+.heart{
+  position:fixed;
+  bottom:20px;
+  font-size:18px;
+  color:var(--pink);
+  animation:float 4s linear forwards;
+  pointer-events:none;
+}
+
+@keyframes float{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-140px);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Conexão iniciada 💚</h2>
+    <p>
+Amor, eu queria poder dizer tudo isso olhando nos seus olhos,
+mas você me fez uma surpresa tão linda
+que eu precisava retribuir de alguma forma,
+mesmo estando longe.
+
+Desde o dia em que nos conhecemos,
+minha vida mudou pra melhor.
+Ficou mais leve, mais feliz,
+mais divertida.
+
+Acordar todos os dias e te mandar um
+“bom dia” ou um “boa noite”
+é algo que eu nunca vou deixar de fazer,
+porque hoje essa é a forma que eu tenho
+de mostrar o quanto eu te amo
+e o quanto você é importante pra mim.
+
+Desde o dia daquela cantada até hoje,
+eu não mudaria absolutamente nada entre a gente.
+Tudo o que a gente viveu,
+cada fase, cada dificuldade,
+só nos fortaleceu
+e confirmou o sentimento que existe entre nós.
+
+Você abriu meus olhos pra enxergar
+que a mulher com quem eu quero me casar,
+construir uma vida
+e ter nossa filha Irene
+é você, meu amor.
+
+Minha vida com você é perfeita.
+E eu não vejo a hora de te ver pessoalmente,
+te encher de beijos,
+de carinho,
+e te abraçar como você merece.
+
+Eu te amo demais, Gabriela 💚
+    </p>
+  </div>
+
+  <div class="card locked" onclick="unlockCard(1)">
+    <h2>🔒 Algo sobre você</h2>
+    <p class="content" id="t1"></p>
+    <span class="hint">toque para descobrir</span>
+  </div>
+
+  <div class="card locked" onclick="unlockCard(2)">
+    <h2>🔒 Quando você sorri</h2>
+    <p class="content" id="t2"></p>
+    <span class="hint">toque para descobrir</span>
+  </div>
+
+  <div class="card locked" onclick="unlockCard(3)">
+    <h2>🔒 Nos dias difíceis</h2>
+    <p class="content" id="t3"></p>
+    <span class="hint">toque para descobrir</span>
+  </div>
+
+  <div class="card locked" id="finalCard">
+    <h2>🔐 Último acesso</h2>
+    <p class="content" id="t4"></p>
+    <input type="text" id="password" placeholder="Digite a senha">
+    <button onclick="checkPassword()">desbloquear</button>
+    <span class="hint">dica: uma data importante 🤍</span>
+  </div>
+
+</div>
+
+<script>
+const texts = {
+1:`MEU AMOR,
+você não passa pela vida.
+Você transforma.
+
+Seu jeito,
+seu cuidado,
+sua presença…
+tudo em você muda o ambiente
+e faz qualquer lugar
+parecer melhor de ficar.
+
+Você é maravilhosa
+nos detalhes simples,
+nas conversas longas,
+nas risadas inesperadas,
+e até nos momentos em que a gente discorda.
+
+Você é intensidade,
+verdade
+e coração.
+E eu admiro tudo isso em você.`,
+
+2:`Quando você sorri,
+o mundo desacelera.
+
+Mas quando você conversa comigo,
+quando briga comigo (kkk),
+quando me chama pra jogar,
+é ali que eu percebo
+o quanto você é minha alegria.
+
+Você transforma dias comuns
+em dias bons.
+Momentos simples
+em algo que eu guardo com carinho.
+
+É com você
+que eu me sinto leve,
+presente,
+em casa.`,
+
+3:`Nos dias difíceis,
+você esteve ali.
+
+Me apoiando,
+me escutando,
+confiando em mim
+quando nem eu sabia se conseguia.
+
+Você caminhou comigo
+em decisões importantes,
+me ensinou coisas novas,
+me fez crescer
+todos os dias.
+
+Nossa comunicação nos levou longe.
+Eu me tornei alguém melhor
+por sua causa.
+
+E hoje eu sei:
+eu desaprendi a viver sem você.
+Porque amar você
+mudou tudo em mim.
+
+Eu estou determinado
+a cuidar de você,
+te proteger emocionalmente
+e escolher você
+a cada segundo.`,
+
+4:`Desde o dia em que te conheci,
+alguma coisa em mim soube.
+Não foi barulho,
+não foi pressa,
+foi certeza silenciosa.
+
+Você chegou devagar,
+mas ficou fundo.
+Cada conversa,
+cada riso,
+cada cuidado seu
+foi criando espaço em mim
+até virar lar.
+
+O que eu sinto por você
+não nasceu de um impulso.
+Cresceu com o tempo,
+com as escolhas,
+com os dias bons
+e até com os difíceis.
+
+Eu aprendi a te amar
+no detalhe:
+no jeito que você fala,
+no jeito que sente,
+no jeito que existe.
+
+Hoje, quando eu penso em amor,
+eu penso em você.
+Em nós.
+No presente que estamos vivendo
+e no futuro que eu quero construir
+ao seu lado.
+
+E isso torna tudo ainda mais especial,
+porque estamos prestes a viver
+nosso primeiro Natal juntos
+um Natal com significado,
+com carinho,
+com verdade.
+
+Eu te escolho.
+Todos os dias.
+Em todos os cenários.
+
+Eu te amo, Gabriela e MEU AMORRRRRRRRRR 🤍
+E estar juntinho de você
+nessa véspera de Natal
+é um dos maiores presentes
+que a vida poderia me dar.`
+};
+
+let progress=0;
+
+function unlockCard(id){
+  if(id!==progress+1) return;
+  const card=document.querySelectorAll(".card")[id];
+  card.classList.remove("locked");
+  card.classList.add("unlocked");
+  typeText(texts[id],document.getElementById("t"+id));
+  spawnHeart();
+  progress++;
+}
+
+function typeText(text,el){
+  el.style.filter="none";
+  el.textContent="";
+  let i=0;
+  const interval=setInterval(()=>{
+    el.textContent+=text[i];
+    i++;
+    if(i>=text.length) clearInterval(interval);
+  },25);
+}
+
+function checkPassword(){
+  const pass=document.getElementById("password").value;
+  if(pass==="26.10"){
+    const card=document.getElementById("finalCard");
+    card.classList.remove("locked");
+    card.classList.add("unlocked");
+    typeText(texts[4],document.getElementById("t4"));
+    spawnHeart();
+  }else{
+    alert("Senha incorreta 🤍");
+  }
+}
+
+function spawnHeart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+}
+
+const matrixWord="GABRIELA";
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+const fontSize=18;
+let columns=canvas.width/fontSize;
+let drops=Array(Math.floor(columns)).fill(1);
+
+function draw(){
+  ctx.fillStyle="rgba(0,0,0,0.08)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#00ff99";
+  ctx.font=fontSize+"px monospace";
+  for(let i=0;i<drops.length;i++){
+    const char=matrixWord[Math.floor(Math.random()*matrixWord.length)];
+    ctx.fillText(char,i*fontSize,drops[i]*fontSize);
+    if(drops[i]*fontSize>canvas.height && Math.random()>0.98){
+      drops[i]=0;
+    }
+    drops[i]++;
+  }
+}
+setInterval(draw,60);
+</script>
+
+</body>
+</html>
